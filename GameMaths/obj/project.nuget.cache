@@ -1,0 +1,12 @@
+{
+  "version": 2,
+  "dgSpecHash": "vQJvtX/Xf578P1w4xCMsju0eTdcr08QK4D48V23uZn815dsfOOsEbJ5V8IqnImVLyNxK2HO32I+zGvZAI6yMIQ==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Ege\\Desktop\\Data\\GameServer\\GameMaths\\GameMaths.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Ege\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.0.1\\microsoft.aspnetcore.app.ref.3.0.1.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\microsoft.netcore.app.ref\\3.0.0\\microsoft.netcore.app.ref.3.0.0.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.0.0\\microsoft.windowsdesktop.app.ref.3.0.0.nupkg.sha512"
+  ],
+  "logs": []
+}

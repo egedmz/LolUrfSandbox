@@ -1,0 +1,29 @@
+{
+  "version": 2,
+  "dgSpecHash": "XrB4QpJoVpbuuE3c1roL33RxqbZ06K/XboTLrDHopQZkye1mCiqneJl7Nj/nVTqVDGOG+Jt1ndE2rr/tognqdg==",
+  "success": true,
+  "projectFilePath": "C:\\Users\\Ege\\Desktop\\Data\\GameServer\\PacketDefinitions420\\PacketDefinitions420.csproj",
+  "expectedPackageFiles": [
+    "C:\\Users\\Ege\\.nuget\\packages\\crc32.net\\1.2.0\\crc32.net.1.2.0.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\enetsharpleague\\1.2.1-beta\\enetsharpleague.1.2.1-beta.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\microsoft.netcore.platforms\\1.1.0\\microsoft.netcore.platforms.1.1.0.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\netstandard.library\\2.0.0\\netstandard.library.2.0.0.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\newtonsoft.json\\12.0.2\\newtonsoft.json.12.0.2.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\system.numerics.vectors\\4.5.0\\system.numerics.vectors.4.5.0.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\microsoft.aspnetcore.app.ref\\3.0.1\\microsoft.aspnetcore.app.ref.3.0.1.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\microsoft.netcore.app.ref\\3.0.0\\microsoft.netcore.app.ref.3.0.0.nupkg.sha512",
+    "C:\\Users\\Ege\\.nuget\\packages\\microsoft.windowsdesktop.app.ref\\3.0.0\\microsoft.windowsdesktop.app.ref.3.0.0.nupkg.sha512"
+  ],
+  "logs": [
+    {
+      "code": "NU1701",
+      "level": "Warning",
+      "warningLevel": 1,
+      "message": "'ENetSharpLeague 1.2.1-beta' paketi, proje hedef çerçevesi '.NETCoreApp,Version=v3.0' yerine '.NETFramework,Version=v4.6.1, .NETFramework,Version=v4.6.2, .NETFramework,Version=v4.7, .NETFramework,Version=v4.7.1, .NETFramework,Version=v4.7.2, .NETFramework,Version=v4.8' kullanılarak geri yüklendi. Bu paket projenizle tamamen uyumlu olmayabilir.",
+      "libraryId": "ENetSharpLeague",
+      "targetGraphs": [
+        ".NETCoreApp,Version=v3.0"
+      ]
+    }
+  ]
+}
