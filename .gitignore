@@ -1,0 +1,6 @@
+bin/
+[Dd]ebug/
+Release/
+[Oo]bj/
+.suo
+.cache

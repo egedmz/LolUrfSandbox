@@ -103,6 +103,10 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             Spells[5].LevelUp();
             Replication = new ReplicationHero(this);
             Stats.SetSpellEnabled(13, true);
+            for (var i = 0; i < 18; i++)
+            {
+                LevelUp();
+            }
         }
 
         private string GetPlayerIndex()
