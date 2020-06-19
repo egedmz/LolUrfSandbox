@@ -152,8 +152,8 @@ namespace LeagueSandbox.GameServer.Maps
         private Game _game;
         private int _cannonMinionCount;
         private int _minionNumber;
-        private readonly long _firstSpawnTime = 90 * 1000;
-        private long _nextSpawnTime = 90 * 1000;
+        private readonly long _firstSpawnTime = 10 * 1000;
+        private long _nextSpawnTime = 10 * 1000;
         private readonly long _spawnInterval = 30 * 1000;
         private readonly Dictionary<TeamId, Fountain> _fountains;
         private readonly Dictionary<TeamId, SurrenderHandler> _surrenders;
@@ -181,7 +181,7 @@ namespace LeagueSandbox.GameServer.Maps
         };
 
         public float GoldPerSecond { get; set; } = 1.9f;
-        public float StartingGold { get; set; } = 475.0f;
+        public float StartingGold { get; set; } = 9475.0f;
         public bool HasFirstBloodHappened { get; set; } = false;
         public bool IsKillGoldRewardReductionActive { get; set; } = true;
         public int BluePillId { get; set; } = 2001;
@@ -216,7 +216,7 @@ namespace LeagueSandbox.GameServer.Maps
         public void Init()
         {
             // Announcer events
-            _game.Map.AnnouncerEvents.Add(new Announce(_game, 30 * 1000, Announces.WELCOME_TO_SR, true)); // Welcome to SR
+            _game.Map.AnnouncerEvents.Add(new Announce(_game, 5 * 1000, Announces.WELCOME_TO_SR, true)); // Welcome to SR
             if (_firstSpawnTime - 30 * 1000 >= 0.0f)
                 _game.Map.AnnouncerEvents.Add(new Announce(_game, _firstSpawnTime - 30 * 1000, Announces.THIRY_SECONDS_TO_MINIONS_SPAWN, true)); // 30 seconds until minions spawn
             _game.Map.AnnouncerEvents.Add(new Announce(_game, _firstSpawnTime, Announces.MINIONS_HAVE_SPAWNED, false)); // Minions have spawned (90 * 1000)

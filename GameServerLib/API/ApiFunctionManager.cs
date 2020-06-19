@@ -142,20 +142,19 @@ namespace LeagueSandbox.GameServer.API
         {
             var t = new Target(toX, toY);
             var p = new Particle(_game, unit, t, particle, size, bone);
-            _game.ObjectManager.AddObject(p);
             return p;
         }
 
         public static IParticle AddParticleTarget(IObjAiBase unit, string particle, ITarget target, float size = 1.0f, string bone = "")
         {
             var p = new Particle(_game, unit, target, particle, size, bone);
-            _game.ObjectManager.AddObject(p);
             return p;
         }
 
         public static void RemoveParticle(IParticle p)
         {
             p.SetToRemove();
+            p.OnRemoved();
         }
 
         public static Minion AddMinion(IChampion champion, string model, string name, float toX, float toY, int visionRadius = 0)

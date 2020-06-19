@@ -4,7 +4,7 @@ using GameServerCore.Domain.GameObjects;
 using static LeagueSandbox.GameServer.API.ApiFunctionManager;
 using GameServerCore.Domain;
 using LeagueSandbox.GameServer.Scripting.CSharp;
-
+using LeagueSandbox.GameServer.API;
 namespace Spells
 {
     public class AkaliMota : IGameScript
@@ -35,7 +35,7 @@ namespace Spells
             var ap = owner.Stats.AbilityPower.Total * 0.4f;
             var damage = 15 + spell.Level * 20 + ap;
             target.TakeDamage(owner, damage, DamageType.DAMAGE_TYPE_PHYSICAL, DamageSource.DAMAGE_SOURCE_ATTACK, false);
-            AddParticleTarget(owner, "akali_markOftheAssasin_marker_tar_02.troy", target, 1, "");
+            var p=AddParticleTarget(owner, "akali_markOftheAssasin_marker_tar_02.troy", target, 1, "");
             projectile.SetToRemove();
         }
 
