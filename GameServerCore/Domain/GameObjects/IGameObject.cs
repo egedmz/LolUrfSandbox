@@ -13,6 +13,8 @@ namespace GameServerCore.Domain.GameObjects
         TeamId Team { get; }
         float CollisionRadius { get; }
         float VisionRadius { get; }
+
+        bool IsInvisible { get; set;}
         /// <summary>
         /// Used to synchronize movement
         /// </summary>
@@ -38,5 +40,7 @@ namespace GameServerCore.Domain.GameObjects
         bool IsMovementUpdated();
         bool IsToRemove();
         bool IsVisibleByTeam(TeamId team);
+
+        public void SetInvis(bool isInvis);
     }
 }

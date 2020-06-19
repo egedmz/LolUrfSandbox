@@ -138,10 +138,10 @@ namespace LeagueSandbox.GameServer.API
 
 
 
-        public static IParticle AddParticle(IObjAiBase unit, string particle, float toX, float toY, float size = 1.0f, string bone = "")
+        public static IParticle AddParticle(IObjAiBase unit, string particle, float toX, float toY, float size = 1.0f, string bone = "", TeamId forTeam=TeamId.TEAM_NEUTRAL)
         {
             var t = new Target(toX, toY);
-            var p = new Particle(_game, unit, t, particle, size, bone);
+            var p = new Particle(_game, unit, t, particle, size, bone, ForTeam:forTeam);
             return p;
         }
 

@@ -135,9 +135,10 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits
 
                     break;
                 case DamageType.DAMAGE_TYPE_MAGICAL:
-                    defense = Stats.MagicPenetration.Total;
+                    defense = Stats.MagicResist.Total;
                     defense = (1 - attackerStats.MagicPenetration.PercentBonus) * defense -
                               attackerStats.MagicPenetration.FlatBonus;
+                    Console.WriteLine("Defans: "+defense);
                     break;
                 case DamageType.DAMAGE_TYPE_TRUE:
                     break;
@@ -208,6 +209,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits
             {
                 attackerStats.CurrentHealth = Math.Min(attackerStats.HealthPoints.Total,
                     attackerStats.CurrentHealth + regain * damage);
+                
                 // TODO: send this in one place only
                 _game.PacketNotifier.NotifyUpdatedStats(attacker, false);
             }

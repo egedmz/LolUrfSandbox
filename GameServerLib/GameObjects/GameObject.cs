@@ -36,6 +36,8 @@ namespace LeagueSandbox.GameServer.GameObjects
 
         public float CollisionRadius { get; set; }
         public float VisionRadius { get; protected set; }
+
+        public bool IsInvisible { get; set; }
         public override bool IsSimpleTarget => false;
         protected Vector2 _direction;
         private Dictionary<TeamId, bool> _visibleByTeam;
@@ -75,6 +77,7 @@ namespace LeagueSandbox.GameServer.GameObjects
             Team = TeamId.TEAM_NEUTRAL;
             _movementUpdated = false;
             _toRemove = false;
+            IsInvisible = false;
         }
 
         public virtual void OnAdded()
@@ -107,7 +110,7 @@ namespace LeagueSandbox.GameServer.GameObjects
         /// Moves the object depending on its target, updating its coordinate.
         /// </summary>
         /// <param name="diff">The amount of milliseconds the object is supposed to move</param>
-        public void Move(float diff, Vector2 to)
+        public virtual void Move(float diff, Vector2 to)
         {
             if (Target == null)
             {
@@ -226,18 +229,38 @@ namespace LeagueSandbox.GameServer.GameObjects
 
         public bool IsVisibleByTeam(TeamId team)
         {
-            return team == Team || _visibleByTeam[team];
+            return (team == Team || _visibleByTeam[team]);
         }
 
         public void SetVisibleByTeam(TeamId team, bool visible)
         {
             _visibleByTeam[team] = visible;
-
+            if (visible)
+            {
+                _game.PacketNotifier.NotifyEnterVisibilityClient(this as IAttackableUnit, team);
+            }
+            else
+            {
+                _game.PacketNotifier.NotifyLeaveVision(this, team);
+            }
             if (this is IAttackableUnit)
             {
                 // TODO: send this in one place only
                 _game.PacketNotifier.NotifyUpdatedStats(this as IAttackableUnit, false);
             }
+        }
+        public void SetInvis(bool isInvis)
+        {
+            if (IsInvisible == isInvis) return;
+            IsInvisible = isInvis;
+            if(Team != TeamId.TEAM_BLUE)
+                SetVisibleByTeam(TeamId.TEAM_BLUE, !isInvis);
+            if(Team != TeamId.TEAM_PURPLE)
+                SetVisibleByTeam(TeamId.TEAM_PURPLE, !isInvis);
+            if(Team != TeamId.TEAM_NEUTRAL)
+                SetVisibleByTeam(TeamId.TEAM_NEUTRAL, !isInvis);
+            SetVisibleByTeam(Team, true);
+            Console.WriteLine("Ýnvis: " + isInvis);
         }
     }
 }

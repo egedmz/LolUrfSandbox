@@ -2,15 +2,24 @@ using GameServerCore.Domain.GameObjects;
 using GameServerCore.Domain;
 using static LeagueSandbox.GameServer.API.ApiFunctionManager;
 using LeagueSandbox.GameServer.Scripting.CSharp;
+using GameServerCore.Enums;
+using LeagueSandbox.GameServer.API;
+using System;
+using LeagueSandbox.GameServer.GameObjects;
+using LeagueSandbox.GameServer.GameObjects.Spells;
+using System.Collections.Generic;
 
 namespace Spells
 {
     public class AkaliSmokeBomb : IGameScript
     {
+
+
         public void OnActivate(IObjAiBase owner)
         {
         }
 
+        
         public void OnDeactivate(IObjAiBase owner)
         {
         }
@@ -21,21 +30,19 @@ namespace Spells
 
         public void OnFinishCasting(IObjAiBase owner, ISpell spell, IAttackableUnit target)
         {
+            (spell as Spell)._game.PacketNotifier.NotifySetAnimation(owner, new List<string> { "RUN" , "Run_sneak" });
             var smokeBomb = AddParticle(owner, "akali_smoke_bomb_tar.troy", owner.X, owner.Y);
-            /*
-             * TODO: Display green border (akali_smoke_bomb_tar_team_green.troy) for the own team,
-             * display red border (akali_smoke_bomb_tar_team_red.troy) for the enemy team
-             * Currently only displaying the green border for everyone
-            */
-            var smokeBombBorder = AddParticle(owner, "akali_smoke_bomb_tar_team_green.troy", owner.X, owner.Y);
-            //TODO: Add invisibility
 
+            var enemyTeam = owner.Team == TeamId.TEAM_BLUE ? TeamId.TEAM_BLUE : TeamId.TEAM_PURPLE;
+            var smokeBombBorder = AddParticle(owner, "akali_smoke_bomb_tar_team_green.troy", owner.X, owner.Y, forTeam:owner.Team);
+            var smokeBombBorderEnemy = AddParticle(owner, "akali_smoke_bomb_tar_team_red.troy", owner.X, owner.Y, forTeam: enemyTeam);
+            AddParticle(owner, "akali_invis_cas.troy", owner.X, owner.Y);
+            AddBuff("AkaliWBuff", 8.0f, 1, spell, owner, owner);
             CreateTimer(8.0f, () =>
             {
-                LogInfo("8 second timer finished, removing smoke bomb");
                 RemoveParticle(smokeBomb);
                 RemoveParticle(smokeBombBorder);
-                //TODO: Remove invisibility
+                RemoveParticle(smokeBombBorderEnemy);
             });
         }
 

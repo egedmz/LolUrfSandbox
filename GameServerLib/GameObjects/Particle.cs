@@ -1,4 +1,5 @@
 ﻿using GameServerCore.Domain.GameObjects;
+using GameServerCore.Enums;
 using LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI;
 using LeagueSandbox.GameServer.GameObjects.Other;
 
@@ -11,7 +12,7 @@ namespace LeagueSandbox.GameServer.GameObjects
         public string BoneName { get; }
         public float Size { get; }
 
-        public Particle(Game game, IGameObject owner, ITarget t, string particleName, float size = 1.0f, string boneName = "", uint netId = 0)
+        public Particle(Game game, IGameObject owner, ITarget t, string particleName, float size = 1.0f, string boneName = "", uint netId = 0, TeamId ForTeam = TeamId.TEAM_NEUTRAL)
                : base(game, t.X, t.Y, 0, 0, netId)
         {
             Owner = owner;
@@ -19,7 +20,7 @@ namespace LeagueSandbox.GameServer.GameObjects
             Name = particleName;
             BoneName = boneName;
             Size = size;
-            _game.PacketNotifier.NotifyFXCreateGroup(this);
+            _game.PacketNotifier.NotifyFXCreateGroup(this, forTeam: ForTeam);
         }
 
         public override void OnRemoved()

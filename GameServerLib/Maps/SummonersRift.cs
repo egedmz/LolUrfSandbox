@@ -152,8 +152,8 @@ namespace LeagueSandbox.GameServer.Maps
         private Game _game;
         private int _cannonMinionCount;
         private int _minionNumber;
-        private readonly long _firstSpawnTime = 10 * 1000;
-        private long _nextSpawnTime = 10 * 1000;
+        private readonly long _firstSpawnTime = 5 * 1000;
+        private long _nextSpawnTime = 5 * 1000;
         private readonly long _spawnInterval = 30 * 1000;
         private readonly Dictionary<TeamId, Fountain> _fountains;
         private readonly Dictionary<TeamId, SurrenderHandler> _surrenders;

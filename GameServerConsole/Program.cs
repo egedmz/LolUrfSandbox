@@ -82,6 +82,7 @@ namespace LeagueSandbox.GameServerConsole
             }
 #endif
             gameServerLauncher.StartNetworkLoop();
+            Console.ReadLine();
         }
 
         private static string LoadConfig(string filePath, string currentJsonString, string defaultJsonString)

@@ -89,6 +89,7 @@ namespace LeagueSandbox.GameServer.GameObjects.Stats
             AttackDamage = new Stat();
             AttackSpeedMultiplier = new Stat(1.0f, 0, 0, 0, 0);
             CooldownReduction = new Stat();
+            CooldownReduction.BaseValue = 0.0f;
             CriticalChance = new Stat();
             CriticalDamage = new Stat(2, 0, 0, 0, 0);
             GoldPerSecond = new Stat();
@@ -96,7 +97,7 @@ namespace LeagueSandbox.GameServer.GameObjects.Stats
             HealthRegeneration = new Stat();
             LifeSteal = new Stat();
             MagicResist = new Stat();
-            MagicPenetration = new Stat();
+            MagicPenetration = new Stat(0, 0, 0, 0, 0);
             ManaPoints = new Stat();
             ManaRegeneration = new Stat();
             MoveSpeed = new Stat();

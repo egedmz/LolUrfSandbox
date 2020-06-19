@@ -41,7 +41,7 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
         public float Y2 { get; private set; }
 
         private CSharpScriptEngine _scriptEngine;
-        private Game _game;
+        public Game _game;
         protected NetworkIdManager _networkIdManager;
 
         private uint _futureProjNetId;
@@ -220,6 +220,7 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
             }
 
             _spellGameScript.ApplyEffects(Owner, u, this, p);
+            if (p is null) return;
             if (p.IsToRemove())
             {
                 Projectiles.Remove(p.NetId);
@@ -327,7 +328,18 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
             _game.ObjectManager.AddObject(c);
             _futureProjNetId = _networkIdManager.GetNewNetId();
         }
-
+        public void DashToLocation(IObjAiBase unit,float x,float y,
+                                 float dashSpeed,
+                                 bool keepFacingLastDirection,
+                                 string animation = null,
+                                 float leapHeight = 0.0f,
+                                 float followTargetMaxDistance = 0.0f,
+                                 float backDistance = 0.0f,
+                                 float travelTime = 0.0f)
+        {
+            ApiFunctionManager.DashToLocation(unit, x, y, dashSpeed, keepFacingLastDirection, animation, leapHeight, followTargetMaxDistance, backDistance, travelTime);
+            (unit as IChampion).lastDasher = this;
+        }
         public void SpellAnimation(string animName, IAttackableUnit target)
         {
             _game.PacketNotifier.NotifySpellAnimation(target, animName);

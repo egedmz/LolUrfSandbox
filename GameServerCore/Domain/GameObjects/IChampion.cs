@@ -10,6 +10,8 @@ namespace GameServerCore.Domain.GameObjects
         float ChampionGoldFromMinions { get; set; }
         IRuneCollection RuneList { get; }
         Dictionary<short, ISpell> Spells { get; }
+
+        public ISpell lastDasher { get; set; }
         int Skin { get; }
         IChampionStats ChampStats { get; }
         byte SkillPoints { get; set; }

@@ -413,7 +413,7 @@ namespace PacketDefinitions420
             _packetHandlerManager.BroadcastPacket(misPacket.GetBytes(), Channel.CHL_S2C);
         }
 
-        public void NotifyFXCreateGroup(IParticle particle, Vector3 direction = new Vector3(), float timespent = 0, bool reqvision = true)
+        public void NotifyFXCreateGroup(IParticle particle, Vector3 direction = new Vector3(), float timespent = 0, bool reqvision = true, TeamId forTeam = TeamId.TEAM_NEUTRAL)
         {
             var fxPacket = new FX_Create_Group();
             fxPacket.SenderNetID = particle.Owner.NetId;
@@ -489,6 +489,12 @@ namespace PacketDefinitions420
             var fxGroup = new List<FXCreateGroupData>();
             fxGroup.Add(fxGroupData1);
             fxPacket.FXCreateGroup = fxGroup;
+            if(forTeam != TeamId.TEAM_NEUTRAL)
+            {
+                _packetHandlerManager.BroadcastPacketTeam(forTeam, fxPacket.GetBytes(), Channel.CHL_S2C);
+                return;
+            }
+
             if (reqvision)
             {
                 _packetHandlerManager.BroadcastPacketVision(particle, fxPacket.GetBytes(), Channel.CHL_S2C);

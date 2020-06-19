@@ -3,6 +3,7 @@ using GameServerCore;
 using GameServerCore.Domain.GameObjects;
 using LeagueSandbox.GameServer.GameObjects.Stats;
 using GameServerCore.Enums;
+using System.Numerics;
 
 namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 {
@@ -107,7 +108,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
         // AI tasks
         protected bool ScanForTargets()
         {
-            if(TargetUnit != null && !TargetUnit.IsDead)
+            if(TargetUnit != null && !TargetUnit.IsDead && Vector2.Distance(TargetUnit.GetPosition(),this.GetPosition()) < 400)
             {
                 return true;
             }

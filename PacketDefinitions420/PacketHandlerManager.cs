@@ -230,11 +230,18 @@ namespace PacketDefinitions420
             if (convertor != null)
             {
                 //TODO: improve dictionary reverse search
-                ulong playerId = _peers.First(x => x.Value.Address.Equals(peer.Address)).Key;
-                dynamic req = convertor(data);
-                // TODO: fix all to use ulong
-                _netReq.OnMessage((int)playerId, req);
-                return true;
+                try
+                {
+                    ulong playerId = _peers.First(x => x.Value.Address.Equals(peer.Address)).Key;
+                    dynamic req = convertor(data);
+                    // TODO: fix all to use ulong
+                    _netReq.OnMessage((int)playerId, req);
+                    return true;
+                } catch(Exception e)
+                {
+                    Console.WriteLine("Packet Loss!!! "+_peers.Values.Count);
+                    return false;
+                }
             }
 
             PrintPacket(data, "Error: ");

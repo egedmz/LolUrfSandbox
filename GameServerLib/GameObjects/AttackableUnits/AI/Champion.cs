@@ -24,6 +24,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
         public Dictionary<short, ISpell> Spells { get; }
         public IChampionStats ChampStats { get; private set; } = new ChampionStats();
 
+        public ISpell lastDasher { get; set; }
         public byte SkillPoints { get; set; }
         public int Skin { get; set; }
 
@@ -278,6 +279,19 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 
             return s;
         }
+        
+        public override void Move(float diff, Vector2 to)
+        {
+            var moveSpeed = GetMoveSpeed();
+            var deltaMovement = moveSpeed * 0.001f * diff;
+            //If we were dashing champion, get my movement back!
+            if (GetDistanceTo(Target) < deltaMovement * 3 && IsDashing)
+            {
+                ApiFunctionManager.CancelDash(this);
+                lastDasher.ApplyEffects((Target as IAttackableUnit), null);
+            }
+            base.Move(diff, to);
+        }
 
         public bool CanSpellBeLeveledUp(ISpell s)
         {
@@ -431,7 +445,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 
         public override void Die(IAttackableUnit killer)
         {
-            RespawnTimer = 5000 + Stats.Level * 2500;
+            RespawnTimer = 2000 + (Stats.Level * 300);
             _game.ObjectManager.StopTargeting(this);
             ChampStats.Deaths += 1;
 

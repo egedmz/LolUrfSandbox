@@ -9,7 +9,7 @@ namespace Spells
         public void OnActivate(IObjAiBase owner)
         {
             var bonusAd = owner.Stats.AttackDamage.Total - owner.Stats.AttackDamage.BaseValue;
-            owner.Stats.SpellVamp.PercentBonus = 6 + bonusAd % 6;
+            owner.Stats.SpellVamp.FlatBonus = (6 + bonusAd % 6)/100;
         }
 
         public void OnDeactivate(IObjAiBase owner)

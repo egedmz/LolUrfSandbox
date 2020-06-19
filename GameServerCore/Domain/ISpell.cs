@@ -36,6 +36,15 @@ namespace GameServerCore.Domain
         void AddProjectileTarget(string nameMissile, ITarget target, bool isServerOnly = false);
         void AddLaser(string effectName, float toX, float toY, bool affectAsCastIsOver = true);
         void AddCone(string effectName, float toX, float toY, float angleDeg, bool affectAsCastIsOver = true);
+
+        public void DashToLocation(IObjAiBase unit, float x, float y,
+                                 float dashSpeed,
+                                 bool keepFacingLastDirection,
+                                 string animation = null,
+                                 float leapHeight = 0.0f,
+                                 float followTargetMaxDistance = 0.0f,
+                                 float backDistance = 0.0f,
+                                 float travelTime = 0.0f);
         void SpellAnimation(string animName, IAttackableUnit target);
     }
 }
