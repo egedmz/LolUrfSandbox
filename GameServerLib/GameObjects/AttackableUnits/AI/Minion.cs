@@ -108,7 +108,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
         // AI tasks
         protected bool ScanForTargets()
         {
-            if(TargetUnit != null && !TargetUnit.IsDead && Vector2.Distance(TargetUnit.GetPosition(),this.GetPosition()) < 400)
+            if(TargetUnit != null && !TargetUnit.IsDead && Vector2.Distance(TargetUnit.GetPosition(),this.GetPosition()) < DETECT_RANGE)
             {
                 return true;
             }

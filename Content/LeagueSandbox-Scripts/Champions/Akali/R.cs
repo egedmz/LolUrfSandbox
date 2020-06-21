@@ -38,15 +38,16 @@ namespace Spells
             spell.DashToLocation(owner, trueCoords.X, trueCoords.Y, 2200, false, "Attack1");
             lastTarget = target;
             AddParticleTarget(owner, "akali_shadowDance_tar.troy", target, 1, "");
-        }
-
-        public void ApplyEffects(IObjAiBase owner, IAttackableUnit target, ISpell spell, IProjectile projectile)
-        {
             var bonusAd = owner.Stats.AttackDamage.Total - owner.Stats.AttackDamage.BaseValue;
             var ap = owner.Stats.AbilityPower.Total * 0.5f;
             var damage = 150 + spell.Level * 100 + bonusAd + ap;
             lastTarget.TakeDamage(owner, damage, DamageType.DAMAGE_TYPE_MAGICAL,
                 DamageSource.DAMAGE_SOURCE_SPELL, false);
+        }
+
+        public void ApplyEffects(IObjAiBase owner, IAttackableUnit target, ISpell spell, IProjectile projectile)
+        {
+            
         }
 
         public void OnUpdate(double diff)

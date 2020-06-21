@@ -1,4 +1,6 @@
 ﻿using System.Collections.Generic;
+using System.Collections.Specialized;
+using System.Linq;
 using GameServerCore.Content;
 using GameServerCore.Domain;
 using GameServerCore.Domain.GameObjects;
@@ -21,7 +23,8 @@ namespace LeagueSandbox.GameServer.GameObjects.Missiles
         protected float _moveSpeed;
         public ISpell OriginSpell { get; protected set; }
         public bool IsServerOnly { get; }
-
+        IGameObject hedef;
+        public IAttackableUnit targetObj = null;
         public Projectile(
             Game game,
             float x,
@@ -34,7 +37,9 @@ namespace LeagueSandbox.GameServer.GameObjects.Missiles
             string projectileName,
             int flags = 0,
             uint netId = 0,
-            bool serverOnly = false
+            bool serverOnly = false,
+            bool gudumlu = false
+        
         ) : base(game, x, y, collisionRadius, 0, netId)
         {
             SpellData = _game.Config.ContentManager.GetSpellData(projectileName);
@@ -48,13 +53,29 @@ namespace LeagueSandbox.GameServer.GameObjects.Missiles
                 VisionRadius = SpellData.MissilePerceptionBubbleRadius;
             }
             ObjectsHit = new List<IGameObject>();
-
+            if(gudumlu)
+            {
+                var lastDist = 1000.0f;
+                IGameObject lastObj = this;
+                var objects = _game.ObjectManager.GetObjects();
+                foreach(var obj in objects)
+                {
+                    if(GetDistanceTo(obj.Value) < lastDist)
+                    {
+                        lastObj = obj.Value;
+                        lastDist = GetDistanceTo(obj.Value);
+                    }
+                }
+                hedef = lastObj;
+            }
             Target = target;
             IsServerOnly = serverOnly;
         }
 
         public override void Update(float diff)
         {
+            if(hedef != null)
+                Target = new Target(hedef.GetPosition());
             if (Target == null)
             {
                 SetToRemove();

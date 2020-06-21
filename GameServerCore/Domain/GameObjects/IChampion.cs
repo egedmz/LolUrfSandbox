@@ -28,7 +28,7 @@ namespace GameServerCore.Domain.GameObjects
         // spells
         void SwapSpells(byte slot1, byte slot2);
         void RemoveSpell(byte slot);
-        ISpell SetSpell(string name, byte slot, bool enabled = false);
+        ISpell SetSpell(string name, byte slot, bool enabled = false, IItem refItem = null);
         ISpell GetSpell(byte slot);
         ISpell LevelUpSpell(byte slot);
 

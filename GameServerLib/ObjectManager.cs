@@ -4,6 +4,7 @@ using System.Linq;
 using GameServerCore;
 using GameServerCore.Domain.GameObjects;
 using GameServerCore.Enums;
+using LeagueSandbox.GameServer.API;
 using LeagueSandbox.GameServer.GameObjects;
 using LeagueSandbox.GameServer.GameObjects.AttackableUnits;
 using LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI;
@@ -98,8 +99,11 @@ namespace LeagueSandbox.GameServer
                     continue;
 
                 var u = obj as IAttackableUnit;
+                _game.PacketNotifier.NotifyUpdatedStats(u, false);
                 foreach (var team in Teams)
                 {
+
+                    //u.SetVisibleByTeam(team, true);
                     if (u.Team == team || team == TeamId.TEAM_NEUTRAL)
                         continue;
 
@@ -112,7 +116,6 @@ namespace LeagueSandbox.GameServer
                             _game.PacketNotifier.NotifySpawn(u);
                             RemoveVisionUnit(u);
                             // TODO: send this in one place only
-                            _game.PacketNotifier.NotifyUpdatedStats(u, false);
                             continue;
                         }
                     }
@@ -122,7 +125,6 @@ namespace LeagueSandbox.GameServer
                         u.SetVisibleByTeam(team, true);
                         _game.PacketNotifier.NotifyEnterVisibilityClient(u, team);
                         // TODO: send this in one place only
-                        _game.PacketNotifier.NotifyUpdatedStats(u, false);
                     }
                     else if (u.IsVisibleByTeam(team) && !TeamHasVisionOn(team, u))
                     {
@@ -149,7 +151,6 @@ namespace LeagueSandbox.GameServer
                 }
 
                 // TODO: send this in one place only
-                _game.PacketNotifier.NotifyUpdatedStats(u, false);
 
                 if (u.IsModelUpdated)
                 {

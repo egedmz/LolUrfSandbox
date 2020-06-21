@@ -135,7 +135,16 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
                 }
                 if (TimeElapsed >= Duration)
                 {
+                    if(BuffAddType != BuffAddType.STACKS_AND_RENEWS || StackCount <= 1)
+                    {
+                        DeactivateBuff();
+                        return;
+                    }
+                    //StackAndRenew Bufflar için, stack countu 1 eksiltip resleyeceðiz.
+                    ResetTimeElapsed();
+                    DecrementStackCount();
                     DeactivateBuff();
+                    ActivateBuff();
                 }
             }
         }

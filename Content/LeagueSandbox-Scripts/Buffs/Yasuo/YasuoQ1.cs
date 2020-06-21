@@ -12,7 +12,6 @@ namespace YasuoQ01
         public BuffAddType BuffAddType => BuffAddType.REPLACE_EXISTING;
         public int MaxStacks => 1;
         public bool IsHidden => true;
-
         public IStatsModifier StatsModifier { get; private set; }
 
         public void OnActivate(IObjAiBase unit, IBuff buff, ISpell ownerSpell)

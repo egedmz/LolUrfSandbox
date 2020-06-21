@@ -1,4 +1,5 @@
 ﻿using System;
+using System.Net.Http;
 using GameServerCore;
 using GameServerCore.Domain;
 using GameServerCore.Domain.GameObjects;
@@ -14,7 +15,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits
 {
     public class AttackableUnit : GameObject, IAttackableUnit
     {
-        internal const float DETECT_RANGE = 475.0f;
+        internal const float DETECT_RANGE = 500.0f;
         internal const int EXP_RANGE = 1400;
 
         public IStats Stats { get; protected set; }
@@ -138,7 +139,6 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits
                     defense = Stats.MagicResist.Total;
                     defense = (1 - attackerStats.MagicPenetration.PercentBonus) * defense -
                               attackerStats.MagicPenetration.FlatBonus;
-                    Console.WriteLine("Defans: "+defense);
                     break;
                 case DamageType.DAMAGE_TYPE_TRUE:
                     break;
@@ -168,8 +168,17 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits
             }
             else
             {
+                float multiplier;
                 //Damage dealing. (based on leagueoflegends' wikia)
-                damage = defense >= 0 ? 100 / (100 + defense) * damage : (2 - 100 / (100 - defense)) * damage;
+                if (defense >= 0) {
+                    multiplier = 100 / (100 + defense);
+                } else
+                {
+                    multiplier = (2 - (100 / (100 - defense)));
+                }
+                damage = multiplier * damage;
+                if(this is IChampion || attacker is IChampion)
+                    Console.WriteLine("Savunma: " + defense + " Çarpan: "+multiplier+"Hasar: "+damage);
             }
 
             ApiEventManager.OnUnitDamageTaken.Publish(this);
@@ -273,8 +282,8 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits
     {
         CHAMPION_ATTACKING_CHAMPION = 1,
         MINION_ATTACKING_CHAMPION = 2,
-        MINION_ATTACKING_MINION = 3,
-        TURRET_ATTACKING_MINION = 4,
+        TURRET_ATTACKING_MINION = 3,
+        MINION_ATTACKING_MINION = 4,
         CHAMPION_ATTACKING_MINION = 5,
         MINION = 6,
         SUPER_OR_CANNON_MINION = 7,

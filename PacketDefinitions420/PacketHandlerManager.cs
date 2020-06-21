@@ -171,6 +171,7 @@ namespace PacketDefinitions420
         public bool BroadcastPacketTeam(TeamId team, byte[] data, Channel channelNo,
             PacketFlags flag = PacketFlags.Reliable)
         {
+
             foreach (var ci in _playerManager.GetPlayers())
             {
                 if (ci.Item2 != null && ci.Item2.Team == team)
@@ -197,6 +198,7 @@ namespace PacketDefinitions420
         public bool BroadcastPacketVision(IGameObject o, byte[] data, Channel channelNo,
             PacketFlags flag = PacketFlags.Reliable)
         {
+
             foreach (var team in _teamsEnumerator)
             {
                 if (team == TeamId.TEAM_NEUTRAL)

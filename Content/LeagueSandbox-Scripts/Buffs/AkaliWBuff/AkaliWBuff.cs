@@ -34,40 +34,39 @@ namespace AkaliWBuff
             curBuff = buff;
             origin = unit.GetPosition();
             unit.SetInvis(true);
-            AddParticle(unit, "akali_blur_02.dds", unit.X,unit.Y);
         }
 
         public void OnDeactivate(IObjAiBase unit)
         {
             unit.SetInvis(false);
         }
-
+        bool invisPenalty = false;
+        GameScriptTimer pTimer = null;
         public void OnUpdate(double diff)
         {
             var unit = curBuff.OriginSpell.Owner;
-            if(unit.IsAttacking || unit.IsCastingSpell)
+            var curPos = curBuff.TargetUnit.GetPosition();
+            var dist = Vector2.Distance(origin, curPos);
+            if (dist >= radius)
             {
-                Console.WriteLine("HİT OK");
                 unit.SetInvis(false);
-                if (curBuff.Duration - curBuff.TimeElapsed > 1.0f)
+                return;
+            }
+            if (unit.IsAttacking || unit.IsCastingSpell)
+            {
+                invisPenalty = true;
+                unit.SetInvis(false);
+                if (!(pTimer is null)) pTimer.EndTimerWithoutCallback();
+                if (curBuff.Duration - curBuff.TimeElapsed > 2.0f)
                 {
-                    CreateTimer(1.0f, () =>
+                    pTimer = CreateTimer(1.5f, () =>
                     {
-                        unit.SetInvis(true);
+                        invisPenalty = false;
                     });
                 }
             }
+            if (!invisPenalty) unit.SetInvis(true);
             
-            var curPos = curBuff.TargetUnit.GetPosition();
-            var dist = Vector2.Distance(origin, curPos);
-            if(dist >= radius)
-            {
-                curBuff.TargetUnit.SetInvis(false);
-            }
-            else if(curBuff.Duration - curBuff.TimeElapsed > .5f)
-            {
-                curBuff.TargetUnit.SetInvis(true);
-            }
         }
                     
     }

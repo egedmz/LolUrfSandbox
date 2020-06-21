@@ -36,7 +36,7 @@ namespace LeagueSandbox.GameServer.GameObjects.Missiles
         {
             SpellData = _game.Config.ContentManager.GetSpellData(effectName);
             CreateRectangle(new Target(x, y), target);
-            _affectAsCastIsOver = affectAsCastIsOver;            
+            _affectAsCastIsOver = affectAsCastIsOver;
         }
 
         public override void Update(float diff)

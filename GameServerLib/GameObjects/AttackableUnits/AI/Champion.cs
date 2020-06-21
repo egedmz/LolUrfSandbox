@@ -66,6 +66,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 
             for (short i = 0; i < CharData.SpellNames.Length; i++)
             {
+                Console.WriteLine(CharData.SpellNames[i]);
                 if (!string.IsNullOrEmpty(CharData.SpellNames[i]))
                 {
                     Spells[i] = new Spell(game, this, CharData.SpellNames[i], (byte)i);
@@ -81,7 +82,10 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             }
 
             Spells[13] = new Spell(game, this, "Recall", 13);
-
+            for(byte i = 14; i < 45; i++)
+            {
+                Spells[i] = new Spell(game, this, "BaseSpell", i);
+            }
             for (short i = 0; i < CharData.Passives.Length; i++)
             {
                 if (!string.IsNullOrEmpty(CharData.Passives[i].PassiveAbilityName))
@@ -285,7 +289,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             var moveSpeed = GetMoveSpeed();
             var deltaMovement = moveSpeed * 0.001f * diff;
             //If we were dashing champion, get my movement back!
-            if (GetDistanceTo(Target) < deltaMovement * 3 && IsDashing)
+            if (Target is null && IsDashing)
             {
                 ApiFunctionManager.CancelDash(this);
                 lastDasher.ApplyEffects((Target as IAttackableUnit), null);
@@ -353,8 +357,8 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
                 _game.PacketNotifier.NotifyUpdatedStats(this, false);
             }
 
-            foreach (var s in Spells.Values)
-            {
+            for (var i = 0; i < Spells.Values.Count; i++) {
+                var s = Spells[(short)i];
                 s.Update(diff);
             }
 
@@ -535,9 +539,9 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             Skin = skinNo;
         }
 
-        public ISpell SetSpell(string name, byte slot, bool enabled)
+        public ISpell SetSpell(string name, byte slot, bool enabled, IItem refItem = null)
         {
-            ISpell newSpell = new Spell(_game, this, name, slot);
+            ISpell newSpell = new Spell(_game, this, name, slot, refItem);
 
             if (Spells[slot] != null)
             {

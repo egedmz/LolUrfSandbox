@@ -73,21 +73,22 @@ namespace LeagueSandbox.GameServer.Items
             return true;
         }
 
-        private void RemoveItem(IItem item, byte slotId, byte newStacks)
+        public void RemoveItem(IItem item, byte slotId, byte newStacks)
         {
             var inventory = _owner.Inventory;
 
             _game.PacketNotifier.NotifyRemoveItem(_owner, slotId, newStacks);
 
-            if(newStacks == 0) // I don't believe there exists a stackable item that applies stats.
+            _owner.Stats.RemoveModifier(item.ItemData);
+
+            if (newStacks == 0) // I don't believe there exists a stackable item that applies stats.
             {
-                _owner.Stats.RemoveModifier(item.ItemData);
                 _owner.RemoveSpell((byte)(slotId + ITEM_ACTIVE_OFFSET));
                 inventory.RemoveItem(item);
             }
         }
 
-        private bool AddItem(IItemData itemData)
+        public bool AddItem(IItemData itemData)
         {
             var item = _owner.Inventory.AddItem(itemData);
 
@@ -102,7 +103,7 @@ namespace LeagueSandbox.GameServer.Items
 
             if (!string.IsNullOrEmpty(item.ItemData.SpellName))
             {
-                _owner.SetSpell(item.ItemData.SpellName, (byte)(_owner.Inventory.GetItemSlot(item) + ITEM_ACTIVE_OFFSET), true);
+                _owner.SetSpell(item.ItemData.SpellName, (byte)(_owner.Inventory.GetItemSlot(item) + ITEM_ACTIVE_OFFSET), true, item);
             }
 
             return true;

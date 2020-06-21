@@ -885,7 +885,7 @@ namespace PacketDefinitions420
         public void NotifyMovement(IGameObject o)
         {
             var answer = new MovementResponse(_navGrid, o);
-            _packetHandlerManager.BroadcastPacketVision(o, answer, Channel.CHL_LOW_PRIORITY);
+            _packetHandlerManager.BroadcastPacket(answer, Channel.CHL_LOW_PRIORITY);
         }
 
         public void NotifyNextAutoAttack(IAttackableUnit attacker, IAttackableUnit target, uint futureProjNetId, bool isCritical,
@@ -1298,9 +1298,9 @@ namespace PacketDefinitions420
             _packetHandlerManager.SendPacket(userId, start, Channel.CHL_S2C);
         }
 
-        public void NotifySpellAnimation(IAttackableUnit u, string animation)
+        public void NotifySpellAnimation(IAttackableUnit u, string animation, float speedScale = 1.0f)
         {
-            var sa = new SpellAnimation(u, animation);
+            var sa = new SpellAnimation(u, animation, speedScale);
             _packetHandlerManager.BroadcastPacketVision(u, sa, Channel.CHL_S2C);
         }
 
@@ -1393,7 +1393,7 @@ namespace PacketDefinitions420
             {
                 var us = new UpdateStats(u.Replication, partial);
                 var channel = Channel.CHL_LOW_PRIORITY;
-                _packetHandlerManager.BroadcastPacketVision(u, us, channel, PacketFlags.Unsequenced);
+                _packetHandlerManager.BroadcastPacket(us, channel, PacketFlags.Unsequenced);
                 if (partial)
                 {
                     u.Replication.MarkAsUnchanged();

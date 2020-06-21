@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GameServerCore.Domain.GameObjects;
 using GameServerCore.Enums;
 
@@ -8,7 +9,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
     {
         public TurretType Type { get; }
         private bool _turretHpUpdated;
-
+        public List<string> conds = null;
         public LaneTurret(
             Game game,
             string name,
@@ -17,7 +18,8 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             TeamId team = TeamId.TEAM_BLUE,
             TurretType type = TurretType.OUTER_TURRET,
             int[] items = null,
-            uint netId = 0
+            uint netId = 0,
+            List<string> conditions = null
         ) : base(game, name, "", x, y, team, netId)
         {
             Type = type;
@@ -34,8 +36,15 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
                     Stats.AddModifier(itemTemplate);
                 }
             }
-
+            conds = conditions;
             BuildTurret(type);
+
+            if (conds != null)
+            {
+                Stats.IsTargetableToTeam = SpellFlags.NonTargetableAll;
+            }
+
+
         }
 
         public int GetEnemyChampionsCount()
@@ -59,6 +68,29 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 
             return blueTeam.Count;
         }
+        public void CheckTargetable(string tName)
+        {
+            if (conds is null) return;
+            if (Stats.IsTargetableToTeam == SpellFlags.TargetableToAll) return;
+            foreach (var cond in conds)
+            {
+                if (cond.Equals(tName))
+                {
+                    Stats.IsTargetableToTeam = SpellFlags.TargetableToAll;
+                }
+            }
+        }
+        public void ReEnable(string tName)
+        {
+            if (conds is null) return;
+            foreach (var cond in conds)
+            {
+                if (cond.Equals(tName))
+                {
+                    Stats.IsTargetableToTeam = SpellFlags.NonTargetableAll;
+                }
+            }
+        }
 
         public void BuildTurret(TurretType type)
         {
@@ -67,7 +99,6 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             {
                 case TurretType.INNER_TURRET:
                     _globalGold = 100;
-
                     Stats.CurrentHealth = 1300;
                     Stats.HealthPoints.BaseValue = 1300;
                     Stats.Range.BaseValue = 905.0f;

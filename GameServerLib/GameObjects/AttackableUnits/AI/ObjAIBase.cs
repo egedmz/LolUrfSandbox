@@ -146,13 +146,15 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
                 }
                 else if (b.BuffAddType == BuffAddType.RENEW_EXISTING)
                 {
+                    
                     Buffs[b.Name].ResetTimeElapsed();
 
                     if (!b.IsHidden)
                     {
                         _game.PacketNotifier.NotifyNPC_BuffReplace(Buffs[b.Name]);
                     }
-                    RemoveStatModifier(Buffs[b.Name].GetStatsModifier()); // TODO: Replace with a better method that unloads -> reloads all data of a script
+                    //RemoveStatModifier(Buffs[b.Name].GetStatsModifier()); // TODO: Replace with a better method that unloads -> reloads all data of a script
+                    Buffs[b.Name].DeactivateBuff();
                     Buffs[b.Name].ActivateBuff();
                 }
                 else if (b.BuffAddType == BuffAddType.STACKS_AND_OVERLAPS)
@@ -226,7 +228,8 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
                         }
                     }
 
-                    RemoveStatModifier(Buffs[b.Name].GetStatsModifier()); // TODO: Replace with a better method that unloads -> reloads all data of a script
+                    //RemoveStatModifier(Buffs[b.Name].GetStatsModifier()); // TODO: Replace with a better method that unloads -> reloads all data of a script
+                    Buffs[b.Name].DeactivateBuff();
                     Buffs[b.Name].ActivateBuff();
                 }
             }
@@ -666,6 +669,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
         public void StopMovement()
         {
             SetWaypoints(new List<Vector2> { GetPosition(), GetPosition() });
+            Target = null;
         }
 
         /// <summary> TODO: Probably not the best place to have this, but still better than packet notifier </summary>
@@ -707,6 +711,7 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 
         public void UpdateAutoAttackTarget(float diff)
         {
+            
             if (HasCrowdControl(CrowdControlType.DISARM) || HasCrowdControl(CrowdControlType.STUN))
             {
                 return;
@@ -727,11 +732,13 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 
             if (TargetUnit != null)
             {
+                
                 if (TargetUnit.IsDead || !_game.ObjectManager.TeamHasVisionOn(Team, TargetUnit))
                 {
                     SetTargetUnit(null);
                     IsAttacking = false;
                     _game.PacketNotifier.NotifySetTarget(this, null);
+                    HasMadeInitialAttack = false;
                     HasMadeInitialAttack = false;
                 }
                 else if (IsAttacking && AutoAttackTarget != null)

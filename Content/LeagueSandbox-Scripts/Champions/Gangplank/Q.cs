@@ -5,6 +5,7 @@ using LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI;
 using LeagueSandbox.GameServer.GameObjects.Missiles;
 using GameServerCore.Domain;
 using LeagueSandbox.GameServer.Scripting.CSharp;
+using LeagueSandbox.GameServer.API;
 
 namespace Spells
 {
@@ -25,10 +26,13 @@ namespace Spells
         public void OnFinishCasting(IObjAiBase owner, ISpell spell, IAttackableUnit target)
         {
             spell.AddProjectileTarget("pirate_parley_mis", target);
+            
+            ApiFunctionManager.AddParticleTarget(owner, "pirate_parley_tar.troy", owner);
         }
 
         public void ApplyEffects(IObjAiBase owner, IAttackableUnit target, ISpell spell, IProjectile projectile)
         {
+            ApiFunctionManager.AddParticleTarget(owner, "pirate_parley_cas.troy", target);
             var isCrit = new Random().Next(0, 100) < owner.Stats.CriticalChance.Total;
             var baseDamage = new[] { 20, 45, 70, 95, 120 }[spell.Level - 1] + owner.Stats.AttackDamage.Total;
             var damage = isCrit ? baseDamage * owner.Stats.CriticalDamage.Total / 100 : baseDamage;

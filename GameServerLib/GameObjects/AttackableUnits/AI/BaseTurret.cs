@@ -116,7 +116,12 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
                 player.Stats.Gold += goldEarn;
                 _game.PacketNotifier.NotifyAddGold(player, this, goldEarn);
             }
-
+            foreach (var obj in _game.ObjectManager.GetObjects())
+            {
+                if (obj.Value is ILaneTurret turret)turret.CheckTargetable(this.Name);
+                if (obj.Value is IInhibitor inhi) inhi.CheckTargetable(this.Name);
+                if (obj.Value is INexus nexus) nexus.CheckTargetable(this.Name);
+            }
             _game.PacketNotifier.NotifyUnitAnnounceEvent(UnitAnnounces.TURRET_DESTROYED, this, killer);
             base.Die(killer);
         }

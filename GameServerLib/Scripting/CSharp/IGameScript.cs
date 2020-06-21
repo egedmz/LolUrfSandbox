@@ -14,5 +14,7 @@ namespace LeagueSandbox.GameServer.Scripting.CSharp
         void OnFinishCasting(IObjAiBase owner, ISpell spell, IAttackableUnit target);
 
         void ApplyEffects(IObjAiBase owner, IAttackableUnit target, ISpell spell, IProjectile projectile);
+
+        void OnUpdate(double diff);
     }
 }

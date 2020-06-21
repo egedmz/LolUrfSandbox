@@ -33,10 +33,13 @@ namespace Spells
             (spell as Spell)._game.PacketNotifier.NotifySetAnimation(owner, new List<string> { "RUN" , "Run_sneak" });
             var smokeBomb = AddParticle(owner, "akali_smoke_bomb_tar.troy", owner.X, owner.Y);
 
-            var enemyTeam = owner.Team == TeamId.TEAM_BLUE ? TeamId.TEAM_BLUE : TeamId.TEAM_PURPLE;
+            var enemyTeam = owner.Team == TeamId.TEAM_BLUE ? TeamId.TEAM_PURPLE : TeamId.TEAM_BLUE;
             var smokeBombBorder = AddParticle(owner, "akali_smoke_bomb_tar_team_green.troy", owner.X, owner.Y, forTeam:owner.Team);
             var smokeBombBorderEnemy = AddParticle(owner, "akali_smoke_bomb_tar_team_red.troy", owner.X, owner.Y, forTeam: enemyTeam);
-            AddParticle(owner, "akali_invis_cas.troy", owner.X, owner.Y);
+
+            AddParticleTarget(owner, "akali_invis_cas.troy", owner);
+            AddParticleTarget(owner, "akali_twilight_buf.troy", owner);
+            AddParticleTarget(owner, "akali_twilightShroud_cas.troy", owner);
             AddBuff("AkaliWBuff", 8.0f, 1, spell, owner, owner);
             CreateTimer(8.0f, () =>
             {

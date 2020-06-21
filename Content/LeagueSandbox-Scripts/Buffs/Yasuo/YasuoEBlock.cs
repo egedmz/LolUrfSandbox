@@ -21,6 +21,7 @@ namespace YasuoEBlock
         public void OnActivate(IObjAiBase unit, IBuff buff, ISpell ownerSpell)
         {
             var time = 11f - ownerSpell.Level * 1f;
+            string name = "Yasuo_Skin1_E_timer" + ownerSpell.Level + ".troy";
             AddParticleTarget(owner, "Yasuo_base_E_timer1.troy", unit);
         }
 

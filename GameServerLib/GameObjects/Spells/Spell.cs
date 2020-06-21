@@ -3,6 +3,7 @@ using GameServerCore.Content;
 using GameServerCore.Domain;
 using GameServerCore.Domain.GameObjects;
 using GameServerCore.Enums;
+using GameServerCore.Packets.Interfaces;
 using LeagueSandbox.GameServer.API;
 using LeagueSandbox.GameServer.Content;
 using LeagueSandbox.GameServer.GameObjects.AttackableUnits;
@@ -11,6 +12,9 @@ using LeagueSandbox.GameServer.GameObjects.Missiles;
 using LeagueSandbox.GameServer.GameObjects.Other;
 using LeagueSandbox.GameServer.Packets;
 using LeagueSandbox.GameServer.Scripting.CSharp;
+using Microsoft.CodeAnalysis.CSharp;
+using PacketDefinitions420.PacketDefinitions.S2C;
+using System;
 using System.Collections.Generic;
 using System.Numerics;
 
@@ -48,14 +52,17 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
 
         private IGameScript _spellGameScript;
 
+        public IItem RefItem = null;
+
         public ISpellData SpellData { get; private set; }
 
-        public Spell(Game game, IChampion owner, string spellName, byte slot)
+        public Spell(Game game, IChampion owner, string spellName, byte slot, IItem refItem = null)
         {
             Owner = owner;
             SpellName = spellName;
             Slot = slot;
             _game = game;
+            RefItem = refItem;
             SpellData = game.Config.ContentManager.GetSpellData(spellName);
             _scriptEngine = game.ScriptEngine;
             _networkIdManager = game.NetworkIdManager;
@@ -64,13 +71,22 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
             _spellGameScript = _scriptEngine.CreateObject<IGameScript>("Spells", spellName) ?? new GameScriptEmpty();
             //Activate spell - Notes: Deactivate is never called as spell removal hasn't been added
             _spellGameScript.OnActivate(owner);
+            
         }
-
+        
         void ISpell.Deactivate()
         {
             _spellGameScript.OnDeactivate(Owner);
         }
-
+        void DecraseStacks()
+        {
+            if (RefItem.ItemData.MaxStacks == 1) return;
+            var slotId = Owner.Inventory.GetItemSlot(RefItem);
+            RefItem.DecrementStackCount();
+            (Owner as IChampion).Shop.RemoveItem(RefItem, slotId, (byte)RefItem.StackCount);
+            
+            
+        }
         /// <summary>
         /// Called when the character casts the spell
         /// </summary>
@@ -80,7 +96,7 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
             {
                 return false;
             }
-
+            if (Owner.IsCastingSpell) return false;
             var stats = Owner.Stats;
             if (SpellData.ManaCost[Level] * (1 - stats.SpellCostReduction) >= stats.CurrentMana ||
                 State != SpellState.STATE_READY)
@@ -106,9 +122,13 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
             {
                 return false;
             }
+            if (RefItem != null)
+            {
+                DecraseStacks();
+            }
+            var newF = int.Parse(Convert.ToString(SpellData.Flags, 8));
 
             _spellGameScript.OnStartCasting(Owner, this, Target);
-
             if (SpellData.GetCastTime() > 0 && (SpellData.Flags & (int)SpellFlag.SPELL_FLAG_INSTANT_CAST) == 0)
             {
                 Owner.SetPosition(Owner.X, Owner.Y); //stop moving serverside too. TODO: check for each spell if they stop movement or not
@@ -123,7 +143,6 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
             _game.PacketNotifier.NotifyNPC_CastSpellAns(_game.Map.NavigationGrid, this, new Vector2(x, y) , new Vector2(x2, y2), _futureProjNetId);
             return true;
         }
-
         /// <summary>
         /// Called when the spell is finished casting and we're supposed to do things such as projectile spawning, etc.
         /// </summary>
@@ -176,6 +195,7 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
         /// </summary>
         public virtual void Update(float diff)
         {
+            _spellGameScript.OnUpdate((double)diff);
             switch (State)
             {
                 case SpellState.STATE_READY:
@@ -294,7 +314,7 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
                 _game,
                 Owner.X,
                 Owner.Y,
-                (int)SpellData.LineWidth,
+                (int)SpellData.LineWidth * 3,
                 Owner,
                 new Target(toX, toY),
                 this,
@@ -340,9 +360,9 @@ namespace LeagueSandbox.GameServer.GameObjects.Spells
             ApiFunctionManager.DashToLocation(unit, x, y, dashSpeed, keepFacingLastDirection, animation, leapHeight, followTargetMaxDistance, backDistance, travelTime);
             (unit as IChampion).lastDasher = this;
         }
-        public void SpellAnimation(string animName, IAttackableUnit target)
+        public void SpellAnimation(string animName, IAttackableUnit target, float speedScale = 1.0f)
         {
-            _game.PacketNotifier.NotifySpellAnimation(target, animName);
+            _game.PacketNotifier.NotifySpellAnimation(target, animName, speedScale);
         }
 
         /// <returns>spell's unique ID</returns>

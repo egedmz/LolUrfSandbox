@@ -106,7 +106,7 @@ namespace GameServerCore.Packets.Interfaces
         void NotifySpawn(IAttackableUnit u);
         void NotifySpawnEnd(int userId);
         void NotifySpawnStart(int userId);
-        void NotifySpellAnimation(IAttackableUnit u, string animation);
+        void NotifySpellAnimation(IAttackableUnit u, string animation, float speedScale = 2.5f);
         void NotifyStaticObjectSpawn(int userId, uint netId);
         void NotifySynchVersion(int userId, List<Tuple<uint, ClientInfo>> players, string version, string gameMode, int mapId);
         void NotifyTeamSurrenderStatus(int userId, TeamId team, SurrenderReason reason, byte yesVotes, byte noVotes);

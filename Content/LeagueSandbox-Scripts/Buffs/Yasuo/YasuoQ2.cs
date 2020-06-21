@@ -23,11 +23,16 @@ namespace YasuoQ02
 
         public void OnActivate(IObjAiBase unit, IBuff buff, ISpell ownerSpell)
         {
+            string indRing = "Yasuo_Base_Q3_Indicator_Ring.troy";
+            string indRingAlt = "Yasuo_Base_Q3_Indicator_Ring_alt.troy";
+            string windR = "Yasuo_Base_Q_wind_ready_buff.troy";
+            string strikeBUP = "Yasuo_Base_Q_strike_build_up_test.troy";
+
             ((IChampion)unit).SetSpell("YasuoQ3W", 0, true);
-            p1 = AddParticleTarget((IChampion)unit, "Yasuo_Base_Q3_Indicator_Ring.troy", unit);
-            p2 = AddParticleTarget((IChampion)unit, "Yasuo_Base_Q3_Indicator_Ring_alt.troy", unit);
-            p3 = AddParticleTarget((IChampion)unit, "Yasuo_Base_Q_wind_ready_buff.troy", unit);
-            p4 = AddParticleTarget((IChampion)unit, "Yasuo_Base_Q_strike_build_up_test.troy", unit);
+            p1 = AddParticleTarget((IChampion)unit, indRing, unit);
+            p2 = AddParticleTarget((IChampion)unit, indRingAlt, unit);
+            p3 = AddParticleTarget((IChampion)unit, windR, unit);
+            p4 = AddParticleTarget((IChampion)unit, strikeBUP, unit);
         }
 
         public void OnDeactivate(IObjAiBase unit)

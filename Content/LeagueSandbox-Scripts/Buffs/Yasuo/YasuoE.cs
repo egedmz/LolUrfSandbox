@@ -5,6 +5,7 @@ using static LeagueSandbox.GameServer.API.ApiFunctionManager;
 using LeagueSandbox.GameServer.GameObjects.Stats;
 using LeagueSandbox.GameServer.Scripting.CSharp;
 using System.Numerics;
+using Microsoft.CodeAnalysis.CSharp.Syntax;
 
 namespace YasuoE
 {
@@ -21,18 +22,36 @@ namespace YasuoE
 
         public void OnActivate(IObjAiBase unit, IBuff buff, ISpell ownerSpell)
         {
-            var time = 0.6f - ownerSpell.Level * 0.1f;
-            var damage = 50f + ownerSpell.Level * 20f + unit.Stats.AbilityPower.Total * 0.6f;
-            AddParticleTarget(unit, "Yasuo_Base_E_Dash.troy", unit);
-            AddParticleTarget(unit, "Yasuo_Base_E_dash_hit.troy", target);
+            var champ = unit as IChampion;
+            string dashBase = "Yasuo_Base_E_Dash.troy";
+            string dashHit = "Yasuo_Base_E_dash_hit.troy";
+            //Skine göre kostüm
+            if(champ.Skin == 2)
+            {
+                dashBase = "Yasuo_Skin1_E_Dash.troy";
+                dashHit = "Yasuo_Skin1_E_dash_hit.troy";
+            }
+
+            CreateTimer(0.03f, () =>
+            {
+                unit.IsCastingSpell = true;
+            });
+                
+            CreateTimer(2*buff.Duration / 3, () =>
+              {
+                  unit.IsCastingSpell = false;
+              });
+            
+            AddParticleTarget(unit, dashBase, unit);
+            AddParticleTarget(unit, dashHit, target);
             var to = Vector2.Normalize(target.GetPosition() - unit.GetPosition());
-            DashToLocation(unit, target.X + to.X * 175f, target.Y + to.Y * 175f, 750f + unit.Stats.MoveSpeed.Total * 0.6f, false, "SPELL3");
-            target.TakeDamage(unit, damage, DamageType.DAMAGE_TYPE_MAGICAL, DamageSource.DAMAGE_SOURCE_SPELL, false);
+            ownerSpell.DashToLocation(unit, target.X + to.X * 300f, target.Y + to.Y * 300f, 1100f, false, "SPELL3");
+            
         }
 
         public void OnDeactivate(IObjAiBase unit)
         {
-            CancelDash(unit);
+            CancelDash(unit);   
         }
 
         public void OnUpdate(double diff)

@@ -260,7 +260,6 @@ namespace LeagueSandbox.GameServer.GameObjects
             if(Team != TeamId.TEAM_NEUTRAL)
                 SetVisibleByTeam(TeamId.TEAM_NEUTRAL, !isInvis);
             SetVisibleByTeam(Team, true);
-            Console.WriteLine("Ýnvis: " + isInvis);
         }
     }
 }

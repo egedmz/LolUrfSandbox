@@ -1,8 +1,10 @@
 ﻿using System;
+using System.Collections.Generic;
 using System.Timers;
 using GameServerCore.Domain.GameObjects;
 using GameServerCore.Enums;
 using LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI;
+using LeagueSandbox.GameServer.GameObjects.Spells;
 
 namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.Buildings.AnimatedBuildings
 {
@@ -14,6 +16,8 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.Buildings.Animate
         private const double RESPAWN_ANNOUNCE = 1 * 60 * 1000;
         private const float GOLD_WORTH = 50.0f;
         private DateTime _timerStartTime;
+
+        public List<string> conds;
         public bool RespawnAnnounced { get; private set; } = true;
 
         // TODO assists
@@ -25,13 +29,19 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.Buildings.Animate
             float x = 0,
             float y = 0,
             int visionRadius = 0,
-            uint netId = 0
+            uint netId = 0,
+            List<string> conditions = null
         ) : base(game, model, new Stats.Stats(), collisionRadius, x, y, visionRadius, netId)
         {
             Stats.CurrentHealth = 4000;
             Stats.HealthPoints.BaseValue = 4000;
             InhibitorState = InhibitorState.ALIVE;
             SetTeam(team);
+            conds = conditions;
+            if (conds != null)
+            {
+                Stats.IsTargetableToTeam = SpellFlags.NonTargetableAll;
+            }
         }
 
         public override void OnAdded()
@@ -64,6 +74,11 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.Buildings.Animate
                 Stats.CurrentHealth = Stats.HealthPoints.Total;
                 SetState(InhibitorState.ALIVE);
                 IsDead = false;
+                foreach (var obj in _game.ObjectManager.GetObjects())
+                {
+                    if (obj.Value is ILaneTurret turret) turret.ReEnable(this.Model);
+                    if (obj.Value is INexus nexus) nexus.ReEnable(this.Model);
+                }
             };
             _respawnTimer.Start();
             _timerStartTime = DateTime.Now;
@@ -77,9 +92,25 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.Buildings.Animate
             SetState(InhibitorState.DEAD, killer);
             RespawnAnnounced = false;
 
+            foreach (var obj in _game.ObjectManager.GetObjects())
+            {
+                if (obj.Value is ILaneTurret turret) turret.CheckTargetable(this.Model);
+                if (obj.Value is INexus nexus) nexus.CheckTargetable(this.Model);
+            }
             base.Die(killer);
         }
-
+        public void CheckTargetable(string tName)
+        {
+            if (conds is null) return;
+            if (Stats.IsTargetableToTeam == SpellFlags.TargetableToAll) return;
+            foreach (var cond in conds)
+            {
+                if (cond.Equals(tName))
+                {
+                    Stats.IsTargetableToTeam = SpellFlags.TargetableToAll;
+                }
+            }
+        }
         public void SetState(InhibitorState state, IGameObject killer = null)
         {
             if (_respawnTimer != null && state == InhibitorState.ALIVE)

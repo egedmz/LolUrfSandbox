@@ -1,25 +1,30 @@
-﻿using GameServerCore.Enums;
+﻿using System;
+using System.Collections.Generic;
+using System.Linq;
+using System.Text;
+using System.Threading.Tasks;
 using GameServerCore.Domain;
 using GameServerCore.Domain.GameObjects;
-using static LeagueSandbox.GameServer.API.ApiFunctionManager;
+using GameServerCore.Enums;
 using LeagueSandbox.GameServer.GameObjects.Stats;
 using LeagueSandbox.GameServer.Scripting.CSharp;
+using static LeagueSandbox.GameServer.API.ApiFunctionManager;
 
-namespace SummonerHasteBuff
+namespace HealthPotion
 {
-    internal class SummonerHasteBuff : IBuffGameScript
+    class HealthPotion : IBuffGameScript
     {
-        public BuffType BuffType => BuffType.HASTE;
-        public BuffAddType BuffAddType => BuffAddType.STACKS_AND_OVERLAPS;
+        public BuffType BuffType => BuffType.HEAL;
+        public BuffAddType BuffAddType => BuffAddType.STACKS_AND_RENEWS;
         public int MaxStacks => 5;
         public bool IsHidden => false;
-        public IObjAiBase mUnit;
+
         public IStatsModifier StatsModifier { get; private set; } = new StatsModifier();
 
         public void OnActivate(IObjAiBase unit, IBuff buff, ISpell ownerSpell)
         {
-            mUnit = unit;
-            StatsModifier.MoveSpeed.PercentBonus = 27 / 100.0f;
+            StatsModifier.HealthRegeneration.FlatBonus = 10;
+
             unit.AddStatModifier(StatsModifier);
         }
 
@@ -30,6 +35,7 @@ namespace SummonerHasteBuff
 
         public void OnUpdate(double diff)
         {
+
         }
     }
 }

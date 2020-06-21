@@ -12,7 +12,7 @@ using static LeagueSandbox.GameServer.API.ApiFunctionManager;
 
 namespace EzrealWBuff
 {
-    class EzrealWBuff : IBuffGameScript
+    class HealthPotion : IBuffGameScript
     {
         public BuffType BuffType => BuffType.COMBAT_ENCHANCER;
         public BuffAddType BuffAddType => BuffAddType.REPLACE_EXISTING;

@@ -33,7 +33,9 @@ namespace Spells
 
             if (!_target.HasBuff("YasuoEBlock"))
             {
-                AddBuff("YasuoE", 0.395f - spell.Level * 0.012f, 1, spell, _owner, _owner);            
+                var damage = 50f + spell.Level * 20f + _owner.Stats.AbilityPower.Total * 0.6f;
+                target.TakeDamage(_owner, damage, DamageType.DAMAGE_TYPE_MAGICAL, DamageSource.DAMAGE_SOURCE_SPELL, false);
+                AddBuff("YasuoE", 0.4f, 1, spell, _owner, _owner);            
                 AddBuff("YasuoEBlock", 11f - spell.Level * 1f, 1, spell, _target, _owner);
             }
         }

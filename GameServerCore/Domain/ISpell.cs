@@ -1,5 +1,6 @@
 ﻿using GameServerCore.Domain.GameObjects;
 using GameServerCore.Enums;
+using GameServerCore.Packets.Interfaces;
 using System.Collections.Generic;
 
 namespace GameServerCore.Domain
@@ -23,7 +24,6 @@ namespace GameServerCore.Domain
         float X2 { get; }
         float Y2 { get; }
         ISpellData SpellData { get; }
-
         bool Cast(float x, float y, float x2, float y2, IAttackableUnit u);
         int GetId();
         float GetCooldown();
@@ -45,6 +45,8 @@ namespace GameServerCore.Domain
                                  float followTargetMaxDistance = 0.0f,
                                  float backDistance = 0.0f,
                                  float travelTime = 0.0f);
-        void SpellAnimation(string animName, IAttackableUnit target);
+        void SpellAnimation(string animName, IAttackableUnit target, float speedScale = 1.0f);
+
+
     }
 }

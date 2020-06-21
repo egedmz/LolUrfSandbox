@@ -1,8 +1,10 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using System.Numerics;
 using GameServerCore.Domain.GameObjects;
 using GameServerCore.Enums;
+using LeagueSandbox.GameServer.API;
 using LeagueSandbox.GameServer.GameObjects.Stats;
 
 namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
@@ -83,6 +85,13 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
 
         public override bool AIMove()
         {
+            //Override movement attack etc. if far away from lane.
+            if(isReturning)
+            {
+                WalkToDestination();
+                return true;
+            }
+            if (!IsInLane()) return true;
             if (base.AIMove())
             {
                 WalkToDestination();
@@ -90,7 +99,38 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
             }
             return false;
         }
-
+        bool isReturning = false;
+        public bool IsInLane()
+        {
+            bool isLane = false;
+            foreach (var point in _mainWaypoints)
+            {
+                if (Vector2.Distance(GetPosition(), point) <= 2000)
+                {
+                    isLane = true;
+                }
+            }
+            if (!isLane)
+            {
+                _game.PacketNotifier.NotifyNPC_InstantStopAttack(this, false);
+                IsAttacking = false;
+                _aiPaused = true;
+                var path = _game.Map.NavigationGrid.GetPath(GetPosition(), _mainWaypoints[_curMainWaypoint + 1]);
+                if(path == null)
+                {
+                    TeleportTo(_mainWaypoints[_curMainWaypoint].X, _mainWaypoints[_curMainWaypoint].Y);
+                    return false;
+                }
+                if (path.Count > 1)
+                {
+                    SetWaypoints(path);
+                    isReturning = true;
+                    ApiFunctionManager.CreateTimer(3.0f, () => { isReturning = false;_aiPaused = false; });
+                }
+                return false;
+            }
+            else { return true; }
+        }
         // TODO: Override ScanForTargets and use unique LaneMinion AI
 
         public void WalkToDestination()
@@ -102,15 +142,12 @@ namespace LeagueSandbox.GameServer.GameObjects.AttackableUnits.AI
                     //CORE_INFO("Minion reached a point! Going to %f; %f", mainWaypoints[curMainWaypoint].X, mainWaypoints[curMainWaypoint].Y);
                     SetWaypoints(new List<Vector2>() { GetPosition(), _mainWaypoints[_curMainWaypoint] });
 
+                    
                     //TODO: Here we need a certain way to tell if the Minion is in the path/lane, else use pathfinding to return to the lane.
                     //I think in league when minion start chasing they save Current Position and
                     //when it stop chasing the minion return to the last saved position, and then continue main waypoints from there.
 
-                    /*var path = _game.Map.NavGrid.GetPath(GetPosition(), _mainWaypoints[_curMainWaypoint + 1]);
-                    if(path.Count > 1)
-                    {
-                        SetWaypoints(path);
-                    }*/
+                    
                 }
             }
         }

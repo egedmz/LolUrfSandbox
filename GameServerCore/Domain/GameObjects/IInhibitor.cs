@@ -8,5 +8,7 @@ namespace GameServerCore.Domain.GameObjects
         InhibitorState InhibitorState { get; }
         void SetState(InhibitorState state, IGameObject killer);
         double GetRespawnTimer();
+
+        public void CheckTargetable(string tName);
     }
 }
